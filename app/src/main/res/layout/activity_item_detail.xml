@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/gradient"
+    android:paddingTop="20dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <ImageView
+            android:id="@+id/ivDetailImage"
+            android:layout_width="match_parent"
+            android:layout_height="220dp"
+            android:layout_marginBottom="16dp"
+            android:background="#73CC80"
+            android:scaleType="centerCrop" />
+
+        <TextView
+            android:id="@+id/tvDetailPostType"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="12dp"
+            android:textColor="#006ECF"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/tvDetailName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="6dp"
+            android:textColor="#2D3F54"
+            android:textSize="15sp" />
+
+        <TextView
+            android:id="@+id/tvDetailPhone"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="6dp"
+            android:textColor="#2D3F54"
+            android:textSize="15sp" />
+
+        <TextView
+            android:id="@+id/tvDetailDescription"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="6dp"
+            android:textColor="#2D3F54"
+            android:textSize="15sp" />
+
+        <TextView
+            android:id="@+id/tvDetailDate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="6dp"
+            android:textColor="#2D3F54"
+            android:textSize="15sp" />
+
+        <TextView
+            android:id="@+id/tvDetailLocation"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="6dp"
+            android:textColor="#2D3F54"
+            android:textSize="15sp" />
+
+        <TextView
+            android:id="@+id/tvDetailCategory"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="6dp"
+            android:textColor="#2D3F54"
+            android:textSize="15sp" />
+
+        <TextView
+            android:id="@+id/tvDetailTimestamp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="24dp"
+            android:textColor="#52647A"
+            android:textSize="12sp" />
+
+        <Button
+            android:id="@+id/btnRemove"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:backgroundTint="#E2584E"
+            android:text="REMOVE ADVERT"
+            android:textSize="16sp" />
+
+    </LinearLayout>
+</ScrollView>

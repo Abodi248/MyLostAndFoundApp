@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/gradient"
+    android:gravity="center"
+    android:orientation="vertical"
+    android:padding="28dp">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:text="Lost &amp; Found"
+        android:textColor="#2D3F54"
+        android:textSize="32sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="48dp"
+        android:text="Reconnecting lost items with their owners"
+        android:textColor="#2D3F54"
+        android:textSize="14sp" />
+
+    <Button
+        android:id="@+id/btnCreateAdvert"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:layout_marginBottom="16dp"
+        android:backgroundTint="#006ECF"
+        android:text="CREATE A NEW ADVERT"
+        android:textSize="16sp" />
+
+    <Button
+        android:id="@+id/btnShowAll"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:backgroundTint="#0FA69D"
+        android:text="SHOW ALL LOST &amp; FOUND ITEMS"
+        android:textSize="16sp" />
+
+</LinearLayout>
