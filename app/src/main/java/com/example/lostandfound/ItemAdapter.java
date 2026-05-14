@@ -36,19 +36,25 @@ public class ItemAdapter extends BaseAdapter {
         ImageView ivThumb    = convertView.findViewById(R.id.ivRowThumb);
 
         tvTitle.setText("[" + item.getPostType() + "] " + item.getCategory() + " — " + item.getName());
+        tvTitle.setTextColor("Lost".equalsIgnoreCase(item.getPostType())
+                ? android.graphics.Color.parseColor("#FF6B6B")
+                : android.graphics.Color.parseColor("#69F0AE"));
         tvSubtitle.setText(item.getDescription());
         tvTimestamp.setText(item.getTimestamp() != null ? item.getTimestamp() : item.getDate());
 
         if (item.getImagePath() != null && !item.getImagePath().isEmpty()) {
             try {
+                ivThumb.setScaleType(ImageView.ScaleType.CENTER_CROP);
                 ivThumb.setImageURI(Uri.parse(item.getImagePath()));
-                ivThumb.setVisibility(View.VISIBLE);
             } catch (Exception e) {
-                ivThumb.setVisibility(View.GONE);
+                ivThumb.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
+                ivThumb.setImageResource(R.drawable.ic_placeholder);
             }
         } else {
-            ivThumb.setVisibility(View.GONE);
+            ivThumb.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
+            ivThumb.setImageResource(R.drawable.ic_placeholder);
         }
+        ivThumb.setVisibility(View.VISIBLE);
 
         return convertView;
     }

@@ -12,10 +12,8 @@ import java.util.List;
 public class DatabaseHelper extends SQLiteOpenHelper {
 
     private static final String DATABASE_NAME = "lostandfound.db";
-    private static final int DATABASE_VERSION = 1;
-
-    public static final String TABLE_ITEMS = "items";
-
+    private static final int DATABASE_VERSION = 2;
+    public static final String TABLE_ITEMS   = "items";
     public static final String COL_ID          = "id";
     public static final String COL_POST_TYPE   = "post_type";
     public static final String COL_NAME        = "name";
@@ -26,20 +24,25 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public static final String COL_CATEGORY    = "category";
     public static final String COL_IMAGE_PATH  = "image_path";
     public static final String COL_TIMESTAMP   = "timestamp";
+    // NEW — geo columns
+    public static final String COL_LATITUDE    = "latitude";
+    public static final String COL_LONGITUDE   = "longitude";
 
     private static final String CREATE_TABLE =
             "CREATE TABLE " + TABLE_ITEMS + " (" +
-            COL_ID          + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
-            COL_POST_TYPE   + " TEXT, " +
-            COL_NAME        + " TEXT, " +
-            COL_PHONE       + " TEXT, " +
-            COL_DESCRIPTION + " TEXT, " +
-            COL_DATE        + " TEXT, " +
-            COL_LOCATION    + " TEXT, " +
-            COL_CATEGORY    + " TEXT, " +
-            COL_IMAGE_PATH  + " TEXT, " +
-            COL_TIMESTAMP   + " DATETIME DEFAULT CURRENT_TIMESTAMP" +
-            ");";
+                    COL_ID          + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                    COL_POST_TYPE   + " TEXT, " +
+                    COL_NAME        + " TEXT, " +
+                    COL_PHONE       + " TEXT, " +
+                    COL_DESCRIPTION + " TEXT, " +
+                    COL_DATE        + " TEXT, " +
+                    COL_LOCATION    + " TEXT, " +
+                    COL_CATEGORY    + " TEXT, " +
+                    COL_IMAGE_PATH  + " TEXT, " +
+                    COL_LATITUDE    + " REAL DEFAULT 0.0, " +
+                    COL_LONGITUDE   + " REAL DEFAULT 0.0, " +
+                    COL_TIMESTAMP   + " DATETIME DEFAULT CURRENT_TIMESTAMP" +
+                    ");";
 
     public DatabaseHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -52,10 +55,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        db.execSQL("DROP TABLE IF EXISTS " + TABLE_ITEMS);
-        onCreate(db);
+        if (oldVersion < 2) {
+            // Add the new geo columns to an existing DB without wiping data
+            db.execSQL("ALTER TABLE " + TABLE_ITEMS + " ADD COLUMN " + COL_LATITUDE  + " REAL DEFAULT 0.0");
+            db.execSQL("ALTER TABLE " + TABLE_ITEMS + " ADD COLUMN " + COL_LONGITUDE + " REAL DEFAULT 0.0");
+        }
     }
-
     public long insertItem(Item item) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
@@ -67,29 +72,39 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         values.put(COL_LOCATION,    item.getLocation());
         values.put(COL_CATEGORY,    item.getCategory());
         values.put(COL_IMAGE_PATH,  item.getImagePath());
+        values.put(COL_LATITUDE,    item.getLatitude());
+        values.put(COL_LONGITUDE,   item.getLongitude());
         long id = db.insert(TABLE_ITEMS, null, values);
         db.close();
         return id;
     }
-
     public List<Item> getAllItems(String categoryFilter) {
         List<Item> list = new ArrayList<>();
         SQLiteDatabase db = this.getReadableDatabase();
-
         String selection = null;
         String[] selectionArgs = null;
         if (categoryFilter != null && !categoryFilter.equals("All")) {
             selection = COL_CATEGORY + " = ?";
             selectionArgs = new String[]{categoryFilter};
         }
-
         Cursor cursor = db.query(TABLE_ITEMS, null, selection, selectionArgs,
                 null, null, COL_TIMESTAMP + " DESC");
-
         if (cursor.moveToFirst()) {
-            do {
-                list.add(cursorToItem(cursor));
-            } while (cursor.moveToNext());
+            do { list.add(cursorToItem(cursor)); } while (cursor.moveToNext());
+        }
+        cursor.close();
+        db.close();
+        return list;
+    }
+    public List<Item> getAllItemsWithLocation() {
+        List<Item> list = new ArrayList<>();
+        SQLiteDatabase db = this.getReadableDatabase();
+        // Only return rows that have real coordinates (not 0,0)
+        Cursor cursor = db.query(TABLE_ITEMS, null,
+                COL_LATITUDE + " != 0 OR " + COL_LONGITUDE + " != 0",
+                null, null, null, COL_TIMESTAMP + " DESC");
+        if (cursor.moveToFirst()) {
+            do { list.add(cursorToItem(cursor)); } while (cursor.moveToNext());
         }
         cursor.close();
         db.close();
@@ -102,9 +117,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 COL_ID + " = ?", new String[]{String.valueOf(id)},
                 null, null, null);
         Item item = null;
-        if (cursor.moveToFirst()) {
-            item = cursorToItem(cursor);
-        }
+        if (cursor.moveToFirst()) item = cursorToItem(cursor);
         cursor.close();
         db.close();
         return item;
@@ -115,19 +128,20 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.delete(TABLE_ITEMS, COL_ID + " = ?", new String[]{String.valueOf(id)});
         db.close();
     }
-
     private Item cursorToItem(Cursor cursor) {
         Item item = new Item();
-        item.setId(       cursor.getInt(   cursor.getColumnIndexOrThrow(COL_ID)));
-        item.setPostType( cursor.getString(cursor.getColumnIndexOrThrow(COL_POST_TYPE)));
-        item.setName(     cursor.getString(cursor.getColumnIndexOrThrow(COL_NAME)));
-        item.setPhone(    cursor.getString(cursor.getColumnIndexOrThrow(COL_PHONE)));
-        item.setDescription(cursor.getString(cursor.getColumnIndexOrThrow(COL_DESCRIPTION)));
-        item.setDate(     cursor.getString(cursor.getColumnIndexOrThrow(COL_DATE)));
-        item.setLocation( cursor.getString(cursor.getColumnIndexOrThrow(COL_LOCATION)));
-        item.setCategory( cursor.getString(cursor.getColumnIndexOrThrow(COL_CATEGORY)));
-        item.setImagePath(cursor.getString(cursor.getColumnIndexOrThrow(COL_IMAGE_PATH)));
-        item.setTimestamp(cursor.getString(cursor.getColumnIndexOrThrow(COL_TIMESTAMP)));
+        item.setId(          cursor.getInt(   cursor.getColumnIndexOrThrow(COL_ID)));
+        item.setPostType(    cursor.getString(cursor.getColumnIndexOrThrow(COL_POST_TYPE)));
+        item.setName(        cursor.getString(cursor.getColumnIndexOrThrow(COL_NAME)));
+        item.setPhone(       cursor.getString(cursor.getColumnIndexOrThrow(COL_PHONE)));
+        item.setDescription( cursor.getString(cursor.getColumnIndexOrThrow(COL_DESCRIPTION)));
+        item.setDate(        cursor.getString(cursor.getColumnIndexOrThrow(COL_DATE)));
+        item.setLocation(    cursor.getString(cursor.getColumnIndexOrThrow(COL_LOCATION)));
+        item.setCategory(    cursor.getString(cursor.getColumnIndexOrThrow(COL_CATEGORY)));
+        item.setImagePath(   cursor.getString(cursor.getColumnIndexOrThrow(COL_IMAGE_PATH)));
+        item.setTimestamp(   cursor.getString(cursor.getColumnIndexOrThrow(COL_TIMESTAMP)));
+        item.setLatitude(    cursor.getDouble(cursor.getColumnIndexOrThrow(COL_LATITUDE)));
+        item.setLongitude(   cursor.getDouble(cursor.getColumnIndexOrThrow(COL_LONGITUDE)));
         return item;
     }
 }

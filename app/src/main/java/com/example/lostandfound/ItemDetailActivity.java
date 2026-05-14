@@ -35,8 +35,11 @@ public class ItemDetailActivity extends AppCompatActivity {
             return;
         }
 
-        ((TextView) findViewById(R.id.tvDetailPostType))
-                .setText(item.getPostType());
+        TextView tvPostType = findViewById(R.id.tvDetailPostType);
+        tvPostType.setText(item.getPostType());
+        tvPostType.setTextColor("Lost".equalsIgnoreCase(item.getPostType())
+                ? android.graphics.Color.parseColor("#E2584E")
+                : android.graphics.Color.parseColor("#0FA69D"));
         ((TextView) findViewById(R.id.tvDetailName))
                 .setText("Name: " + item.getName());
         ((TextView) findViewById(R.id.tvDetailPhone))

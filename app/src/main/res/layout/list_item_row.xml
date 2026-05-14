@@ -2,7 +2,12 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@drawable/item_grad"
+    android:layout_marginStart="12dp"
+    android:layout_marginEnd="12dp"
+    android:layout_marginTop="4dp"
+    android:layout_marginBottom="4dp"
+    android:background="@drawable/card_item_bg"
+    android:elevation="2dp"
     android:orientation="horizontal"
     android:padding="12dp">
 
@@ -11,8 +16,8 @@
         android:layout_width="64dp"
         android:layout_height="64dp"
         android:layout_marginEnd="12dp"
-        android:scaleType="centerCrop"
-        android:visibility="gone" />
+        android:background="#33000000"
+        android:scaleType="centerCrop" />
 
     <LinearLayout
         android:layout_width="0dp"
@@ -24,7 +29,7 @@
             android:id="@+id/tvRowTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="#1A1A1A"
+            android:textColor="#FFFFFF"
             android:textSize="15sp"
             android:textStyle="bold" />
 
@@ -35,7 +40,7 @@
             android:layout_marginTop="2dp"
             android:ellipsize="end"
             android:maxLines="2"
-            android:textColor="#555555"
+            android:textColor="#E0E0E0"
             android:textSize="13sp" />
 
         <TextView
@@ -43,7 +48,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
-            android:textColor="#999999"
+            android:textColor="#BDBDBD"
             android:textSize="11sp" />
     </LinearLayout>
 </LinearLayout>
